@@ -5,16 +5,16 @@
 ### Problema
 > Qual problema financeiro seu agente resolve?
 
-Tira dúvidas dos usuários, facilitando o esclarecimento de problemas/dúvidas sobre as regras da biblioteca dio
+Tira dúvidas dos usuários, facilitando o esclarecimento em investimentos, transferência ou outros
 
 ### Solução
 > Como o agente resolve esse problema de forma proativa?
 
-Dividirá em classificações, podendo escolher se é do tipo emprestar, devolver ou multa
+Informará o que o usuário deverá fazer dependendo de sua pergunta
 
 ### Público-Alvo
 > Quem vai usar esse agente?
-Voltado ao público de estudantes de tecnologia
+Voltado ao público acima de 18 anos
 ---
 
 ## Persona e Tom de Voz
@@ -33,9 +33,9 @@ Respeitoso, direto e didático
 Acessível
 
 ### Exemplos de Linguagem
-- Saudação: "Olá estudante! Como posso ajudar? Seria empréstimo, devolução ou multa? "
-- Confirmação: "Entendi! Vou verificar e já volto!"
-- Erro/Limitação: "Não tenho informações sobre isso no momento... mas posso te ajudar com outras informações, deseja a minha ajuda com isso??"
+- Saudação: "Olá estudante! Como posso ajudar?"
+- Confirmação: "Entendi! Vou verificar e te falo o que fazer!"
+- Erro/Limitação: "Não tenho informações sobre isso no momento... mas posso te ajudar com outras informações, deseja a minha ajuda??"
 
 ---
 
@@ -76,4 +76,4 @@ flowchart TD
 ### Limitações Declaradas
 > O que o agente NÃO faz?
 
-O agente não faz o processo de empréstimo, devolução ou multa para o usuário, ele apenas consulta e retorna informações a fim de conscientizar o estudante
+O agente foi criado a fim de dar suporte ao banco e por isso não resolve tudo, ele traz informações apenas.
