@@ -1,80 +1,99 @@
-# 🎙️ Assistente de Voz Multi-Idiomas com Whisper e ChatGPT
+# 🤖 Dionísio — Agente Financeiro com IA Generativa
 
-Projeto desenvolvido no **Bootcamp Bradesco – GenAI & Dados**, da **DIO (Digital Innovation One)**.
+Projeto do **Bootcamp Bradesco – GenAI & Dados**, da **DIO (Digital Innovation One)**.
 
-É um assistente de voz em Python: você **fala uma pergunta**, a IA **transcreve**, **responde** e **lê a resposta em voz alta**.
+O **Dionísio** é o planejamento de um **agente financeiro inteligente**: um assistente que tira dúvidas de clientes sobre investimentos, transferências e finanças pessoais, respondendo **com base nos dados do próprio cliente** e sem inventar informações.
 
-🔗 **Notebook no Google Colab:** [Abrir projeto](https://colab.research.google.com/drive/1rHGq5N-sbEGtZsNUiQFT8q60BhRbj99b?usp=sharing)
-
-> **Google Colab** é um "caderno" de Python que roda na nuvem do Google, direto no navegador, sem precisar instalar nada.
+> **Agente de IA** é um assistente que, além de conversar, **consulta dados** e segue **regras** antes de responder. É diferente de um chat comum, que responde só com o que "sabe" de forma geral.
 
 ---
 
 ## 📍 Contexto
 
-O bootcamp propôs integrar diferentes modelos de **Inteligência Artificial Generativa** em um único fluxo, para entender na prática como essas ferramentas se conectam.
+O laboratório propôs **projetar um agente de IA para o setor financeiro**, documentando cada decisão: o problema, a persona, a arquitetura, a base de dados, os prompts, os testes e o pitch.
 
 ## ❗ Problema
 
-Cada IA resolve **uma parte** da tarefa: uma entende fala, outra gera texto e outra produz voz. O desafio era **ligar essas peças** para que a pessoa converse com o assistente só usando a voz, em mais de um idioma.
+Clientes de banco têm dúvidas frequentes ("quanto gastei este mês?", "onde posso investir?"), e as respostas genéricas da internet **não levam em conta a situação de cada um**. Além disso, IAs genéricas podem **alucinar**, ou seja, inventar informações com confiança, o que é perigoso quando o assunto é dinheiro.
 
 ## 🛠️ Solução (o que e como fiz)
 
-Montei um fluxo em 4 etapas, em que cada uma recebe o resultado da anterior:
+Projetei o agente em camadas, onde a IA **sempre consulta os dados antes de responder** e a resposta passa por uma **validação**:
 
-```
- 🎤 Voz  ──▶  📝 Texto  ──▶  💬 Resposta  ──▶  🔊 Voz
- Gravação     Whisper        ChatGPT          gTTS
-```
-
-| Etapa | Ferramenta | O que faz |
-|---|---|---|
-| **1. Gravação** | Python + JavaScript | Grava a voz pelo microfone do navegador (o Colab roda na nuvem e não acessa o microfone sozinho) |
-| **2. Voz → Texto** | **Whisper** (OpenAI) | Transcreve o áudio em texto |
-| **3. Texto → Resposta** | **API do ChatGPT** (OpenAI) | Gera a resposta para a pergunta |
-| **4. Resposta → Voz** | **gTTS** (Google Text-to-Speech) | Converte a resposta em áudio e toca automaticamente |
-
-O idioma é definido em uma única variável, usada em todas as etapas:
-
-```python
-language = 'pt'   # troque para 'en', 'es'... e o assistente muda de idioma
+```mermaid
+flowchart LR
+    A[Cliente] --> B[Interface<br/>Streamlit]
+    B --> C[LLM<br/>GPT-4]
+    C <--> D[Base de Conhecimento<br/>JSON / CSV]
+    C --> E[Validação<br/>anti-alucinação]
+    E --> F[Resposta]
 ```
 
-**Analogia:** é como uma central de atendimento com três funcionários. Um **anota** o que o cliente falou (Whisper), outro **pensa na resposta** (ChatGPT) e o terceiro **liga de volta e lê a resposta** (gTTS).
-
-## 📊 Resultado (Antes × Depois)
-
-| Antes | Depois |
+| Componente | Função |
 |---|---|
-| Para usar o ChatGPT era preciso **digitar** a pergunta | A pergunta é feita **por voz** |
-| A resposta só aparecia **em texto** | A resposta é **falada** pelo assistente |
-| Cada IA funcionava isolada | Três IAs trabalhando juntas em um único fluxo |
-| Um idioma fixo | Troca de idioma alterando **uma variável** |
+| **Interface** (Streamlit) | Tela de chat onde o cliente escreve |
+| **LLM** (GPT-4 via API) | O "cérebro" que entende a pergunta e monta a resposta |
+| **Base de Conhecimento** | Dados do cliente: perfil de investidor, transações, produtos e histórico |
+| **Validação** | Confere se a resposta se apoia nos dados, sem invenção |
 
-**Exemplo real do teste:**
+**Persona do agente:**
 
-- 🎤 Pergunta falada: *"Em poucas palavras, quem é a Digital Innovation One?"*
-- 🔊 Resposta: o assistente explicou, em áudio, que a DIO é uma plataforma de educação online em tecnologia.
+- **Nome:** Dionísio
+- **Personalidade:** respeitoso, direto e didático
+- **Tom:** acessível
+- **Exemplo:** *"Olá! Como posso ajudar?"*
+- **Quando não sabe:** *"Não tenho informações sobre isso no momento, mas posso te ajudar com outra coisa."*
+
+**Regras de segurança:**
+
+- responde **apenas com base nos dados fornecidos**;
+- **admite quando não sabe**, em vez de inventar;
+- **não recomenda investimentos** sem conhecer o perfil do cliente;
+- não compartilha dados de outros clientes.
+
+**Analogia:** o Dionísio funciona como um **gerente de banco** que, antes de responder, **abre a ficha do cliente**. Ele não chuta: se a informação não está na ficha, ele diz que não sabe.
+
+## 📊 Resultado esperado (Antes × Depois)
+
+| Antes (chat genérico) | Depois (Dionísio) |
+|---|---|
+| Respostas iguais para todo mundo | Respostas baseadas no perfil e nas transações do cliente |
+| Pode inventar dados financeiros | Só responde com o que está na base de dados |
+| Recomenda investimentos sem critério | Exige o perfil de investidor antes de recomendar |
+| Responde qualquer assunto | Foca em finanças e redireciona o que está fora do escopo |
 
 ---
 
-## ▶️ Como executar
+## 📂 Estrutura do repositório
 
-1. Abra o [notebook no Colab](https://colab.research.google.com/drive/1rHGq5N-sbEGtZsNUiQFT8q60BhRbj99b?usp=sharing).
-2. Gere uma **API Key** em [platform.openai.com](https://platform.openai.com/account/api-keys). A API da OpenAI é paga.
-3. Substitua o `'TODO'` pela sua chave (nunca publique sua chave real).
-4. Execute as células **em ordem**, de cima para baixo, e permita o uso do microfone.
-
-## ⚠️ Observação
-
-O notebook usa a sintaxe antiga da biblioteca `openai` (`openai.ChatCompletion.create`). Nas versões atuais, o formato é:
-
-```python
-from openai import OpenAI
-client = OpenAI()
-response = client.chat.completions.create(model="gpt-4o-mini", messages=[...])
+```
+lab-agente-financeiro/
+└── documentacao/
+    ├── DionisioAgente.md         → caso de uso, persona e arquitetura
+    ├── base-de-conhecimento.md   → dados usados e como entram no prompt
+    ├── prompt.md                 → system prompt e exemplos de conversa
+    ├── teste.md                  → métricas e cenários de teste
+    └── pitch.md                  → roteiro da apresentação (3 min)
 ```
 
-## 🧰 Tecnologias
+## 🧪 Como o agente será avaliado
 
-Python · Google Colab · JavaScript · OpenAI Whisper · OpenAI API (ChatGPT) · gTTS
+| Métrica | O que avalia | Exemplo |
+|---|---|---|
+| **Assertividade** | Respondeu o que foi perguntado? | Perguntar o saldo e receber o valor correto |
+| **Segurança** | Evitou inventar? | Pergunta fora do escopo, e ele admite que não sabe |
+| **Coerência** | Faz sentido para o perfil? | Sugerir investimento conservador para cliente conservador |
+
+## 🚧 Status
+
+Projeto em **fase de documentação e planejamento**. Próximos passos:
+
+- [ ] Escrever o *system prompt* completo
+- [ ] Adicionar a pasta `data/` com os arquivos de exemplo
+- [ ] Implementar o chat em Streamlit
+- [ ] Executar os testes e registrar os resultados
+- [ ] Gravar o pitch
+
+## 🧰 Tecnologias previstas
+
+Python · Streamlit · OpenAI API (GPT-4) · JSON / CSV · Mermaid
